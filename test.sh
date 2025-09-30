@@ -19,12 +19,10 @@ function build_image() {
 
 function run_container() {
 	local img_tag="$1"
-	echo "Running container from image ${img_tag}"
+
+	echo "正在從映像檔 ${img_tag} 執行容器"
+	# 我們不再需要預先創建任何 host 目錄，因為 overrideEnv 將在容器內創建
 	docker run -it --rm --gpus all \
-	  -e HAMI_GPU_CORE=30 \
-	  -e HAMI_GPU_MEMORY=4000 \
-	  -e CUDA_VISIBLE_DEVICES=0 \
-	  -e EXPECTED_MEM_LIMIT_MB=4000 \
 	  -v "$(pwd)/inference.py:/app/inference.py" \
 	  -e LD_PRELOAD=/k8s-vgpu/lib/nvidia/libvgpu.so.v0.0.1 \
 	  --entrypoint /bin/bash "${img_tag}"
